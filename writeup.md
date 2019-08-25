@@ -364,16 +364,16 @@ class Line():
         left_bottom_x = left_fit_real[0]*(y_eval*ym_per_pix)**2 + left_fit_real[1]*(y_eval*ym_per_pix) + left_fit_real[2]
         right_bottom_x = right_fit_real[0]*(y_eval*ym_per_pix)**2 + right_fit_real[1]*(y_eval*ym_per_pix) + right_fit_real[2]
         print(left_bottom_x, 'm', right_bottom_x, 'm')
-        left_top_x = left_fit_real[2]
-        right_top_x = right_fit_real[2]
-        print(left_top_x, 'm', right_top_x, 'm')
+        left_middle_x = left_fit_real[0]*(y_eval/2*ym_per_pix)**2 + left_fit_real[1]*(y_eval/2*ym_per_pix) +left_fit_real[2]
+        right_middle_x = right_fit_real[0]*(y_eval/2*ym_per_pix)**2 + right_fit_real[1]*(y_eval/2*ym_per_pix)+right_fit_real[2]
+        print(left_middle_x, 'm', right_middle_x, 'm')
         
 
         #########################################################
         """The second point I said in this explanation is as follows."""
         #########################################################
         # the width between the lines is about 4.5[m], so ,if it isn't,it seems that lane lines are not detected.
-        if ((np.abs(4.5-np.abs(left_bottom_x-right_bottom_x))<=1.0)&(np.abs(4.5-np.abs(left_top_x-right_top_x))<=2.0)):
+        if ((np.abs(4.5-np.abs(left_bottom_x-right_bottom_x))<=1.0)&(np.abs(4.5-np.abs(left_middle_x-right_middle_x))<=1.0)):
             self.detection_update(True)
             self.fit_update(left_fit,right_fit)
             self.fitx_update(left_fitx,right_fitx)
@@ -397,7 +397,11 @@ class Line():
             lane_area_overrayed = cv2.fillPoly(warped_area,np.int_([pts]), (0, 255, 0))
             unwarped_lane_area_overrayed_img = cv2.warpPerspective(lane_area_overrayed, self.M_inv, img_size, flags=cv2.INTER_LINEAR)
             lane_area_overrayed_img = cv2.addWeighted(undist, 1, unwarped_lane_area_overrayed_img, 0.2, 0)
-        self.line_base_pos = ((left_bottom_x+right_bottom_x)/2-img_size[0]/2*xm_per_pix)#from center to the right
+        self.line_base_pos = (img_size[0]/2*xm_per_pix-(left_bottom_x+right_bottom_x)/2)#from center to the right
+        text = "Vehicle is " + "{:.2f}".format(self.line_base_pos) + "[m] right of center"
+        lane_area_overrayed_img = cv2.putText(lane_area_overrayed_img, text, (40,60), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255,255,255), 2, cv2.LINE_AA)
+        text = "Curventure is " + "{:.2f}".format(np.mean(self.recent_radius_of_curvature[-1])) + "[m]"
+        lane_area_overrayed_img = cv2.putText(lane_area_overrayed_img, text, (40,150), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255,255,255), 2, cv2.LINE_AA)
 
         return lane_area_overrayed_img
 
