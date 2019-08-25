@@ -25,7 +25,7 @@ The goals / steps of this project are the following:
 [image4]: ./warped_binary_image.png "Warp"
 [image5]: ./find_lane_points.png "Fit Visual"
 [image6]: ./warped_lane_area.png "Output"
-[video1]: ./project_videos_output_complete_ver_with_N_5.mp4 "Video"
+[video1]: ./project_videos_output_with_N_5.mp4 "Video"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
